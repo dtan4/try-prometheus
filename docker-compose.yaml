@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  # https://prometheus.io/docs/prometheus/latest/installation/
+  prometheus:
+    image: prom/prometheus:v2.24.1
+    container_name: prometheus
+    ports:
+    - "9090:9090"
+    volumes:
+    - "${PWD}/prometheus.yml:/etc/prometheus/prometheus.yml"
+
+  # https://github.com/prometheus/node_exporter
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:v1.1.0
+    container_name: node_exporter
+    command:
+    - "--path.rootfs=/host"
+    # network_mode: host
+    ports:
+    - "9100:9100"
+    pid: host
+    restart: unless-stopped
+    volumes:
+    - "/:/host:ro,rslave"
